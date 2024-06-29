@@ -1,0 +1,51 @@
+const admin = require("firebase-admin");
+
+const data = {
+    "type": "service_account",
+    "project_id": "crackin-beta",
+    "private_key_id": "e3e599255098334a1ed832700840646dc360b80c",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQC0KbyxkpkOfBi+\nQijtvqmNEPvcFYDwGY3c++D4ik3TfejCVDr12PyseVERFSqAl495pewFCr5skm1K\nKWca5BMKGPHVGfqvVWBJbnBA4eKClhKvSJpqDch3LBJLmmA6q3JxWkyduieaMCLB\nSScRKFxEK37S57PJhYr/S3p1pGpT/PBn7dHWJf2pJcOEA3HKH2dH7qVr8qZqRFbQ\nPauDVTzGcCZm36S0Rar8/1PU9XUB1XVR2OTnLusCKKKXnjp+/7S6odCJ+6shomq2\nFRgDghEy2gybjEUCl98qMnoP6ytwMi7bGc4qT4zCBV7Ho0Pht/b8B3clHWuQyhBK\nR9Hihh15AgMBAAECggEAA5gnkxVdJ1xTdAxG28Nnh5B0reXh7ihcW7HMwbikp9kF\nuUbL7Fa5Z8l91Azrjag4bRFh3ZHizbC4LHgZ/f/Z32QzAvDjPvdBlgV1iN3Y0oki\n80tMBVykCLig3tBEJjeAb4GBMM5jduCJ+Pg4Js/600NY4uVLgXRAGyrK1SkEFAvZ\nvHUIWnLRxMMOLb9R4ZsctiyRtjpaCBj+0JvVArmEGnojqpoJrAVHBcIhiisAvEP5\nZXdWhB5THIvRkKL70Qzg5LDIkUYYroOnNBLJaM1VOvZvEvR5TUt2S7R4jH6kSPxM\n2FvpTAykbl3pTWRC+mJTURYfdlSwdbE6rr6ysik1PwKBgQDjy6Z4bRK704ZpcuhE\ngYNH0eVSMYlFJ99bSP/WqWbeipYDpyp+X4kxxFisjRx9hG1qWBPt7PqIXrySupAX\nnKhUMh0XBJsZGKWW/bJ9sBxkCY6aH6hQlYac3cSlm13sayY6bZ05DNTVlyDLivwB\nkoxsV5YWngMOWgPGSaCADHWfWwKBgQDKeExH/Q+wvE06YwvIK7tKL5f7pnoq1rPn\niXbhwza/WUWAGFyyBKql2u8J5uvhNvpE2CUaU52UTBylXE+8ej0m28tB+lTt8ECH\nahHXZVzb/viejyqvEAOJJKF4PkeWOIYQsEzHPvjPcbP8OId31Is+yiUbIMVuRWwN\ngeaSktQCuwKBgQDAVORbbYyRtckZI4HkxY04iIoc2eJS15WIl5wbfLB0WYLL1srU\nJInL0UIlfod9muBfF7rL+niVx5dkM80Rgp3FaQKSurrRd7PoRo/7+0QdWsxiaTRN\nxdIAhGZShVnKEbYXQxGqZ6EULiPsd47LLRcPKux4cDWYWnwxYVz4gIyXXQKBgQCp\n1is2n8JPoESv23GAoZ5jZnT4tPb5hEw4xoigbB46eGniP41SDrQOmA23oqruqi1Z\nHm5RHR6rzQSieUKxeWBefjSLza78QHIApSr+IZq5N7HZX4KQgsBUhBOmR6fJDPT4\nfsqIv/v6FwjBY7HPBM0hCHQDw4OZMkanNfXxsZSCDQKBgQDX1NsbQISrGe7k+/YD\n4N3zFuDUCRt4DCGSFVXXaat3Ws55OJhzzOM565xHWgv598kT0hSSamWk4sMb0wls\nxoM5h0zXTcH/zrVnMWlGzBTdvdEdP/h0qIjMqAWFq15cv1sY4lk9DGbnqQK0Vc6i\n1pDwV57VkY1RaKme+5CGe9duoA==\n-----END PRIVATE KEY-----\n",
+    "client_email": "firebase-adminsdk-vzqbs@crackin-beta.iam.gserviceaccount.com",
+    "client_id": "108972134804616619894",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-vzqbs%40crackin-beta.iam.gserviceaccount.com",
+    "universe_domain": "googleapis.com"
+  }
+
+admin.initializeApp({
+  credential: admin.credential.cert(data),
+  databaseURL: 'https://crackin-beta-default-rtdb.firebaseio.com'
+});
+const readline = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+// Fungsi untuk membuat admin
+async function createAdmin(userName) {
+  try {
+    const userRecord = await admin.auth().getUserByEmail(userName);
+    const uid = userRecord.uid;
+
+    const userRef = admin.firestore().collection('users').doc(uid);
+
+    await userRef.set({
+      admin: true,
+      role: "ADMIN"
+    }, { merge: true });
+
+    
+  } catch (error) {
+    console.error('Error:', error);
+  }
+
+  process.exit();
+}
+  
+readline.question('Enter a Email User = ', name => {
+    createAdmin(name);
+    console.log(`USER ${name} telah dijadikan ADMIN.`);
+    readline.close();
+});

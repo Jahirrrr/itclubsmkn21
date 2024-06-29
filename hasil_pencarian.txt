@@ -1,0 +1,19 @@
+<?php
+    include '../template/root.php';
+    session_start();
+    $id=$_GET['id'];
+    var_dump($_GET);
+    $delete = "DELETE FROM notification WHERE  id_notif= $id";
+
+    if($conn->query($delete)){
+        // echo "Berhasil Delete";
+        $_SESSION['success']="Berhasil Delete";
+                header("location:./");
+    }
+    else{
+        echo mysqli_error($conn);
+    }
+?>
+
+array(1) { ["id"]=> string(1) "1" }
+Warning: Cannot modify header information - headers already sent by (output started at /storage/ssd2/066/22381066/public_html/admin/dashboard/notification/delete.php:5) in /storage/ssd2/066/22381066/public_html/admin/dashboard/notification/delete.php on line 11

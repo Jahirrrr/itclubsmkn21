@@ -1,0 +1,88 @@
+return (
+                <>
+                    {postData.edited ? <span className='edited'>(edited)</span> : null}
+                    <div className='postTitle'>
+                        {currentUserPost && !this.props.profile ? (
+                            <>
+                                <button onClick={() => this.editPost('title')}>Edit Title</button>
+                                <br></br><br></br>
+                            </>
+                        ) : null}
+                        {this.state.editPost === 'title' ? (
+                            <EditLinkPost
+                                editField="title" 
+                                docId={post.id}
+                                editPost={() => this.editPost(false)} 
+                                markAsEdited={this.markAsEdited}
+                                updatePosts={this.props.updatePosts}
+                                initialValue={postData.title} 
+                            />
+                        ) : (
+                            <>
+                                {postData.title}
+                                <br></br><br></br>
+                            </>
+                        )}
+                    </div>
+                    <div className='postLink'>
+                        {this.state.editPost === 'link' ? (
+                            <EditLinkPost
+                                editField="link" 
+                                docId={post.id}
+                                editPost={() => this.editPost(false)} 
+                                markAsEdited={this.markAsEdited}
+                                updatePosts={this.props.updatePosts}
+                                initialValue={postData.link}
+                            />
+                        ) : (
+                            <>
+                                {/(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/i.test(postData.link) ? (
+                                    <div className='postLink youtube'>
+                                        <iframe
+                                            title={this.getId(postData.link)}
+                                            src={`//www.youtube.com/embed/${this.getId(postData.link)}`}
+                                            frameBorder="0"
+                                            allowFullScreen
+                                        ></iframe>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <a className='postLink' target='_blank' href={postData.link} rel="noopener noreferrer">
+                                            {postData.link}
+                                        </a>
+                                    </>
+                                )}
+                            </>
+                        )}
+                        <br></br>
+                        {currentUserPost && !this.props.profile ? (
+                            <div className='editButtons'>
+                                <button onClick={() => this.editPost('link')}>Edit Link</button>
+                            </div>
+                        ) : null}
+                    </div>
+                </>
+            );
+
+
+
+<div className={`postContainer ${this.props.post.data().type}`}>
+                {this.state.location.pathname === '/' || this.state.location.pathname === '/feed' || this.state.location.pathname.includes('/post/') || this.state.location.pathname.includes('/profile/') ?
+                    <div className='groupName'>
+                        <Link to={`/group/${this.props.post.data().group}`}>{this.props.post.data().group}</Link>
+                    </div>
+                    : null}
+                <div className='postedBy'>
+                    <span className='user'>Posted by <Link to={`/profile/${this.props.post.data().username}`}>{this.props.post.data().username}</Link></span>
+                    <span className='dividingDot'>·</span>
+                    <span className='distanceInWords'>
+                        {formatDistanceToNowStrict(this.props.post.data().dateCreated.toDate(), { addSuffix: true })}
+                    </span>
+                </div>
+                {this.props.profile ? null : <VoteButton collection='posts' doc={this.props.post} />}
+                {this.generatePost()}
+                {(this.props.user && this.props.user.uid === this.props.post.data().uid) || this.state.isAdmin ? <DeletePostButton profile={this.props.profile} updatePosts={this.props.updatePosts} docId={this.props.post.id} /> : null}
+                <Link className='commentCount' to={`/group/${this.props.post.data().group}/post/${this.props.post.id}`}>
+                    {this.props.post.data().commentCount === 1 ? `${this.props.post.data().commentCount} Comment` : `${this.props.post.data().commentCount} Comments`}
+                </Link>
+            </div>

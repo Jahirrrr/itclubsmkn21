@@ -1,0 +1,162 @@
+#9c805b
+
+
+<input
+                    type="text"
+                    placeholder="Search..."
+                    value={this.state.searchQuery}
+                    onChange={this.handleSearchChange}
+                    style={styles.searchInput}
+                />
+
+
+
+
+
+const styles = {
+            allGroups: {
+                textAlign: 'center',
+                fontFamily: 'Arial, sans-serif',
+            },
+            h2: {
+                fontSize: '24px',
+                marginBottom: '20px',
+            },
+            searchInput: {
+                width: '100%',
+                maxWidth: '300px', // Atur lebar maksimum
+                padding: '10px',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+                boxSizing: 'border-box',
+                marginBottom: '10px',
+                fontSize: '16px',
+            },
+            groupLink: {
+                textDecoration: 'none',
+                color: '#333',
+                fontSize: '18px',
+                margin: '5px 0',
+                transition: 'color 0.3s ease',
+            },
+            groupLinkHover: {
+                color: '#007BFF',
+            },
+        };
+
+
+
+
+
+
+
+
+import React from 'react';
+import fire from '../config/Fire';
+import { Link } from 'react-router-dom';
+
+export default class AllGroups extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            groups: [],
+            searchQuery: '', // Menyimpan kata kunci pencarian
+        };
+    }
+
+    componentDidMount() {
+        this.props.showLoader();
+        fire.firestore().collection('groups').get().then(groupsData => {
+            const groupsArr = groupsData.docs.map(group => group.id);
+            const sortedGroupsArr = groupsArr.sort((a, b) => a.toLowerCase() > b.toLowerCase());
+            this.setState({ groups: sortedGroupsArr });
+        }).then(this.props.hideLoader);
+    }
+
+    // Event handler untuk memperbarui searchQuery saat input berubah
+    handleSearchChange = (e) => {
+        this.setState({ searchQuery: e.target.value });
+    }
+
+    render() {
+        const styles = `
+            /* Styling for the search input */
+            .search-input {
+                width: 100%;
+                max-width: 768px;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
+                margin-bottom: 10px;
+            }
+
+            h2 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            /* Style for the search results container */
+            #allGroupsList {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            /* Style for each group link */
+            .group-link {
+                text-decoration: none;
+                color: #333;
+                font-size: 18px;
+                margin: 5px 0;
+                transition: color 0.3s ease;
+            }
+
+            /* Style for each group link on hover */
+            .group-link:hover {
+                color: #007BFF;
+            }
+
+            /* Media query for smaller screens */
+            @media (max-width: 768px) {
+                /* Adjust styles for smaller screens here */
+                .search-input {
+                    width: 100%;
+                    max-width: 300px;
+                    padding: 10px;
+                    border: 1px solid #ccc;
+                    border-radius: 4px;
+                    box-sizing: border-box;
+                    margin-bottom: 10px;
+                    font-size: 14px;
+                }
+                .group-link {
+                    font-size: 16px;
+                }
+            }
+        `;
+
+        return (
+            <div className='allGroups'>
+                <style>{styles}</style>
+                <h2>All Groups</h2>
+                <input
+                    type="text"
+                    placeholder="Cari disini..."
+                    value={this.state.searchQuery}
+                    onChange={this.handleSearchChange}
+                    className="search-input"
+                />
+                <div id='allGroupsList'>
+                    {this.state.groups
+                        .filter(group => group.toLowerCase().includes(this.state.searchQuery.toLowerCase()))
+                        .map(group => (
+                            <Link key={group} to={`/group/${group}`} className="group-link">
+                                {group}
+                            </Link>
+                        ))}
+                </div>
+            </div>
+        );
+    }
+}
