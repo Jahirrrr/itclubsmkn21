@@ -78,7 +78,7 @@ class Header extends React.Component {
         <Link to='/'>
         <Toast />
         </Link>
-        <Link to='/'><h1 id='crackin'>IT Club 21</h1></Link>
+        <Link to='/'><h1 id='crackin'>ITC 21</h1></Link>
         <GroupsNav setModal={this.props.setModal} currentUser={fire.auth().currentUser} />
         {fire.auth().currentUser ?
           <div className='navButtons'>
