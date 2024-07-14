@@ -1,6 +1,6 @@
-# IT CLUB SMKN21 JAKARTA
+# IT CLUB SMKN 21 JAKARTA
 
-Website For Community
+Website For IT CLUB 21 Community
 
 
 ## Tech Stacks
